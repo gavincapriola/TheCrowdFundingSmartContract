@@ -21,4 +21,24 @@ contract CrowdFunding {
         minimumContribution = 100 wei;
         admin = msg.sender;
     }
+
+    function contribute() public payable {
+        require(block.timestamp < deadline, "Deadline has passed!");
+        require(msg.value >= minimumContribution, "Minimun Contribution not met!");
+
+        if(contributors[msg.sender] == 0) {
+            noOfContributors++;
+        }
+
+        contributors[msg.sender] += msg.value;
+        raisedAmount += msg.value;
+    }
+
+    receive() payable external {
+        contribute();
+    }
+
+    function getBalance() public view returns(uint) {
+        return address(this).balance;
+    }
 }
