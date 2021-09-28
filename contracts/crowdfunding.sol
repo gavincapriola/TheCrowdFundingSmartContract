@@ -41,4 +41,17 @@ contract CrowdFunding {
     function getBalance() public view returns(uint) {
         return address(this).balance;
     }
+
+    function getRefund() public {
+        require(block.timestamp > deadline && raisedAmount < goal);
+        require(contributors[msg.sender] > 0);
+
+        address payable recipient = payable(msg.sender);
+        uint value = contributors[msg.sender];
+        recipient.transfer(value);
+
+        // payable(msg.sender).transfer(contributors[msg.sender]);
+
+        contributors[msg.sender] = 0;
+    }
 }
