@@ -91,4 +91,14 @@ contract CrowdFunding {
         thisRequest.voters[msg.sender] = true;
         thisRequest.noOfVoters++;
     }
+
+    function makePayment(uint _requestNo) public onlyAdmin {
+        require(raisedAmount >= goal);
+        Request storage thisRequest = requests[_requestNo];
+        require(thisRequest.completed == false, "The request has been completed!");
+        require(thisRequest.noOfVoters > noOfContributors / 2); // 50% voted for this request
+
+        thisRequest.recipient.transfer(thisRequest.value);
+        thisRequest.completed = true;
+    }
 }
